@@ -1,4 +1,4 @@
 *.pyc
-*.wav
-*.m
+modules/
+samples/
 test/
