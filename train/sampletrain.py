@@ -14,16 +14,16 @@ import librosa
 from pyAudioAnalysis import audioFeatureExtraction
 from functools import partial
 
-sys.path.append('../')
+sys.path.append('../main/')
 import dsp 			#../dsp.py
 import audioio		#../audioio.py
 
 #5个点的采样数据目录
-SAMPLEPATH_P1 = './Samples1'
-SAMPLEPATH_P2 = './Samples2'
-SAMPLEPATH_P3 = './Samples3'
-SAMPLEPATH_P4 = './Samples4'
-SAMPLEPATH_P5 = './Samples5'
+SAMPLEPATH_P1 = '../samples/Samples1'
+SAMPLEPATH_P2 = '../samples/Samples2'
+SAMPLEPATH_P3 = '../samples/Samples3'
+SAMPLEPATH_P4 = '../samples/Samples4'
+SAMPLEPATH_P5 = '../samples/Samples5'
 FILETYPE = '.wav'				#数据文件格式，其余文件不识别
 
 
@@ -100,12 +100,12 @@ if __name__ == '__main__':
 	# pca = PCA(n_components=11)
 	# reduceddata = pca.fit_transform(featuredata)
 	# reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
-	# savemodel(pca, './pca.m')	#保存模型
+	# savemodel(pca, '../modules/pca.m')	#保存模型
 
 	# lda = LDA(n_components=4)
 	# reduceddata = lda.fit_transform(featuredata, y)
 	# reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
-	# savemodel(lda, './lda.m')	#保存模型
+	# savemodel(lda, '../modules/lda.m')	#保存模型
 	# print('ok')
 
 	# plt.subplot(5,1,1)
@@ -139,8 +139,8 @@ if __name__ == '__main__':
 	# classifier = LDA(n_components=4)
 	classifier.fit(x_train, y_train)	#测试训练
 	# classifier.fit(reduceddata, y)		#全数据训练
-	# savemodel(classifier, './svm.m')	#保存模型
-	# classifier = svm_readmodel('./knock.m')		#读取模型
+	# savemodel(classifier, '../modules/svm.m')	#保存模型
+	# classifier = svm_readmodel('../modules/knock.m')		#读取模型
 	print('ok')
 
 	print("输出训练集的准确率为：", classifier.score(x_train, y_train))
