@@ -36,9 +36,9 @@ def diswave(x, sr, ion=False):
 		plt.show()
 
 audio_cache = {}	#记录声音数据，用于连续录音
-pca = readmodel('./Samples/pca.m')
-classifier = readmodel('./Samples/svm.m')		#读取模型
-# coef = np.load('./Samples/coef.npy')
+pca = readmodel('../modules/pca.m')
+classifier = readmodel('../modules/svm.m')		#读取模型
+# coef = np.load('../modules/coef.npy')
 fir = dsp.FIR_Filter(44100, 300, 330, deltp=1.008, delts=0.005)
 def dataprocess(audiodata, callback = None):
 	'''	数据处理

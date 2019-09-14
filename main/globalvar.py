@@ -16,3 +16,4 @@ CHUNK_NUM = 10		#每个frame中的CHUNK数目
 GATE = 0.3		#端点检测门限值
 SIGNALLEN = 6400	#声音长度
 
+exitFlag = 0
