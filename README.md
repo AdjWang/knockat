@@ -8,7 +8,7 @@ knockat/
 |-- |-- main.py                  主程序-运行此程序启动  
 |-- |-- operation.py           识别后的操作  
 |-- |-- record.py                麦克风操作，录音  
-|-- modules/                    模型文件-训练自动产生
+|-- modules/                    模型文件-训练自动产生  
 |-- |-- *.m  
 |-- references/            参考资料  
 |-- |--  ...  
