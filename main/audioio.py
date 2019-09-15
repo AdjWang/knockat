@@ -47,7 +47,7 @@ def saveaudio(filename, audiodata, channels, format, rate, overwrite=True):
 	wf.setframerate(rate)
 	wf.writeframes(audiodata)
 	wf.close()
-	print(filename)
+	print(filename + ' saved')
 
 def newaudio(f, sr, T):
 	'''	创建音频

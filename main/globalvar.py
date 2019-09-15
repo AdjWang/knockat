@@ -16,4 +16,6 @@ CHUNK_NUM = 10		#每个frame中的CHUNK数目
 GATE = 0.3		#端点检测门限值
 SIGNALLEN = 6400	#声音长度
 
-exitFlag = 0
+exitFlag = 0 		#程序退出标识，ctrl+c触发
+
+MODE_ENUM = ("normal", "sample1", "sample2", "sample3", "sample4", "sample5", "train")

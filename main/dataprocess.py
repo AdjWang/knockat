@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import math
 import struct
 import numpy as np
 import multiprocessing
@@ -40,7 +41,7 @@ pca = readmodel('../modules/pca.m')
 classifier = readmodel('../modules/svm.m')		#读取模型
 # coef = np.load('../modules/coef.npy')
 fir = dsp.FIR_Filter(44100, 300, 330, deltp=1.008, delts=0.005)
-def dataprocess(audiodata, callback = None):
+def dataprocess(audiodata, callback = None, mode = "normal"):
 	'''	数据处理
 		流程：
 			if有缓存，说明上次检测到一部分声音，本次开头一定是剩余声音，不进行端点检测，直接连接:
@@ -78,12 +79,19 @@ def dataprocess(audiodata, callback = None):
 			elif isinstance(callback, multiprocessing.queues.Queue):	#进程通信队列
 				callback.put(position, block=False)
 
+	def save_audio(audiodata):
+		filename = f'../samples/{mode}/{mode}.wav'				#io.saveaudio函数自动重命名
+		if not os.path.exists(os.path.dirname(filename)):		#如果sample文件夹不存在，创建文件夹
+			os.makedirs(os.path.dirname(filename))
+		io.saveaudio(filename, audiodata, CHANNELS, FORMAT, RATE, overwrite=False)		#保存音频文件，函数自动重命名
 
 	tupdata = struct.unpack('<'+len(audiodata)//WIDTH*'h', audiodata)#音频数据byte转int
 	floatdata = np.array(tupdata, dtype='float32')/float(1 << ((8 * WIDTH) - 1))		#归一化数据
 
 	if len(audio_cache) > 0:	#有缓存，需要连接剩下的声音
-		# io.saveaudio('./test.wav', audio_cache['byte_audio']+audiodata[:math.ceil(WIDTH*audio_cache['endpoint'])], CHANNELS, FORMAT, RATE)#保存声音
+		if mode[:-1] == "sample":
+			save_audio(audio_cache['byte_audio']+audiodata[:math.ceil(WIDTH*audio_cache['endpoint'])])#保存声音
+
 		floatdata = np.concatenate([audio_cache['last_audio'], floatdata[:audio_cache['endpoint']]])#连接上次和本次数据
 		audio_cache.clear()		#清空缓存
 		#数据处理
@@ -97,7 +105,9 @@ def dataprocess(audiodata, callback = None):
 			audio_cache['endpoint'] = r - len(floatdata)		#结束点在下个帧里的位置
 			# return
 		elif l != 0 or r != 0:		#声音片断在当前帧内，正常处理，不缓存
-			# io.saveaudio('./test.wav', audiodata[math.floor(WIDTH*l):math.ceil(WIDTH*r)], CHANNELS, FORMAT, RATE)#保存声音
+			if mode[:-1] == "sample":
+				save_audio(audiodata[math.floor(WIDTH*l):math.ceil(WIDTH*r)])#保存声音
+
 			process(floatdata[l:r])
 		else:
 			# print('None')

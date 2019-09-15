@@ -19,11 +19,11 @@ import dsp 			#../dsp.py
 import audioio		#../audioio.py
 
 #5个点的采样数据目录
-SAMPLEPATH_P1 = '../samples/Samples1'
-SAMPLEPATH_P2 = '../samples/Samples2'
-SAMPLEPATH_P3 = '../samples/Samples3'
-SAMPLEPATH_P4 = '../samples/Samples4'
-SAMPLEPATH_P5 = '../samples/Samples5'
+SAMPLEPATH_P1 = '../samples/sample1'
+SAMPLEPATH_P2 = '../samples/sample2'
+SAMPLEPATH_P3 = '../samples/sample3'
+SAMPLEPATH_P4 = '../samples/sample4'
+SAMPLEPATH_P5 = '../samples/sample5'
 FILETYPE = '.wav'				#数据文件格式，其余文件不识别
 
 
@@ -35,7 +35,7 @@ def savemodel(model, filename):
 	''' 保存训练模型 '''
 	joblib.dump(model, filename)
 
-if __name__ == '__main__':
+def audio_train():
 	print('读取数据文件列表...', end='', flush=True)
 	datafilelist1 = audioio.loaddatafile(SAMPLEPATH_P1, FILETYPE)
 	datafilelist2 = audioio.loaddatafile(SAMPLEPATH_P2, FILETYPE)
@@ -146,4 +146,5 @@ if __name__ == '__main__':
 	print("输出训练集的准确率为：", classifier.score(x_train, y_train))
 	print("输出测试集的准确率为：", classifier.score(x_test, y_test))
 
-
+if __name__ == '__main__':
+	audio_train()

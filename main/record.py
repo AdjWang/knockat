@@ -15,7 +15,7 @@ from globalvar import *		#导入全局变量
 
 
 # RECORD_SECONDS = 5
-def record_start(callback = None):
+def record_start(callback = None, mode = "normal"):
 	'''	加载麦克风录音
 	'''
 	global exitFlag
@@ -45,7 +45,7 @@ def record_start(callback = None):
 			# audio_data = np.fromstring(data, dtype=np.short)
 			''' 数据处理程序 '''
 			# print('数据处理...')
-			dataprocess(audio_data, callback)
+			dataprocess(audio_data, callback, mode)
 	except KeyboardInterrupt:
 		exitFlag = 1
 

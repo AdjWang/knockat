@@ -3,7 +3,7 @@ knockat/
 |-- main/
 |   |-- audioio.py          音频文件读写
 |   |-- dataprocess.py      音频数据处理
-|   |-- dsp.py         	    数字信号处理
+|   |-- dsp.py              数字信号处理
 |   |-- globalvar.py        全局变量
 |   |-- main.py             主程序-运行此程序启动
 |   |-- operation.py        识别后的操作
