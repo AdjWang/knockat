@@ -13,7 +13,7 @@ knockat/
 |-- references/            参考资料  
 |-- |--  ...  
 |-- samples/                程序主体模块存放  
-|-- |-- samples*/           采样-数字*对应采样点  
+|-- |-- samples\*/           采样-数字*对应采样点  
 |-- test/                   功能开发测试  
 |-- train/                  数据训练  
 |-- |-- sampletrain.py  
