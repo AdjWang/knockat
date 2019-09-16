@@ -20,22 +20,34 @@ from multiprocessing.dummy import Pool as ThreadPool	#线程并发
 #全局变量
 #函数
 def saveaudio(filename, audiodata, channels, format, rate, overwrite=True):
-	'''	保存声音到文件
-		filename: 文件目录+文件名
-		audiodata: 二进制声音数据 <class 'bytes'>
-		channels: 声道数量
-		format: 数据格式 例如pyaudio.paInt16
-		rate: 采样频率
-		overwrite: 如果文件已经存在就: True:覆盖 False:报错
-		>>> filename = os.path.join(path, 's5_'+str(savecount)+'.wav')
-	'''
-	#保存声音
+	"""保存声音到文件
+
+		Args:
+			filename: 文件目录+文件名
+			audiodata: 二进制声音数据 <class 'bytes'>
+			channels: 声道数量
+			format: 数据格式 例如pyaudio.paInt16
+			rate: 采样频率
+			overwrite: 如果文件已经存在就: True:覆盖 False:报错
+
+		Returns:
+			None
+
+		Raises:
+			如果目录不存在，wf = wave.open(filename, 'wb')会报错
+
+		Notes:
+			filename示例:
+			>>> filename = os.path.join(path, 's5_'+str(savecount)+'.wav')
+	"""
+	# 保存声音
+	# 如果文件名重复，自动重命名
 	if os.path.exists(filename) and not overwrite:	#如果文件已经存在
 		i = 2
-		firstname = '.'.join(filename.split('.')[:-1])
+		firstname = '.'.join(filename.split('.')[:-1])			# 提取文件名
 		newfirstname = firstname
-		fileformat = '.' + filename.split('.')[-1]
-		while(os.path.isfile(newfirstname + fileformat)):		#重名文件重命名
+		fileformat = '.' + filename.split('.')[-1]				# 提取后缀
+		while(os.path.isfile(newfirstname + fileformat)):		# 重名文件加括号
 			newfirstname = firstname + '({})'.format(i)
 			i += 1
 		filename = newfirstname + fileformat
@@ -50,22 +62,30 @@ def saveaudio(filename, audiodata, channels, format, rate, overwrite=True):
 	print(filename + ' saved')
 
 def newaudio(f, sr, T):
-	'''	创建音频
-		f:音频频率(Hz)
-		sr:采样频率(Hz)
-		T:时间s
-		返回音频数据，numpy数组格式
-	'''
+	"""创建音频
+
+		Args:
+			f: 音频频率(Hz)
+			sr: 采样频率(Hz)
+			T: 时间s
+		
+		Rerutns:
+			音频数据，numpy数组格式
+	"""
 	t = np.linspace(0, T, int(T*sr), endpoint=False)
 	x = 0.5*np.sin(2*np.pi*f*t)
 	return x
 
 # CHUNK = 1024
 def loadwav(filename):
-	''' 从目录中读取语音
-		filename: 文件目录+文件名
-		返回归一化数据，numpy数组格式
-	'''
+	"""从.wav文件中读取语音
+
+		Args:
+			filename: 文件目录+文件名
+
+		Returns:
+			归一化数据，numpy数组格式
+	"""
 	wf = wave.open(filename, 'rb')
 	width = wf.getsampwidth()	#数据长度，用于二进制byte数据转换为音频数据时参考
 	# read data
@@ -84,11 +104,15 @@ def loadwav(filename):
 	return floatdata/float(1 << ((8 * width) - 1))		#返回归一化数据
 
 def loaddatafile(path, filetype):
-	'''	加载数据文件名
-		path:数据文件目录
-		filetype:文件类型，其余类型不加载
-		返回数据文件路径列表
-	'''
+	"""遍历目录下所有指定类型文件
+
+		Args:
+			path:数据文件目录
+			filetype:文件类型，其余类型不加载
+
+		Returns:
+			文件路径列表
+	"""
 	return [
 		os.path.join(path, filename)
 		for filename
@@ -97,10 +121,15 @@ def loaddatafile(path, filetype):
 		]
 
 def loaddata(datafile):
-	'''	加载数据
-		datafile:数据文件，类型可以是单个文件路径，也可以是多个文件路径列表
-		返回数据集
-	'''
+	"""批量加载目录下音频数据
+
+		Args:
+			datafile:数据文件，类型可以是单个文件路径，也可以是多个文件路径列表
+
+		Returns:
+			datafile为单个文件：numpy数据
+			datafile为目录：数据列表，元素为numpy数据
+	"""
 	if isinstance(datafile, list):
 		pool = ThreadPool(6)	#多线程
 		# data = pool.map(lambda x:librosa.load(x, sr=None), datafile)#加载所有数据
