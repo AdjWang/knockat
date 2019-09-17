@@ -22,23 +22,23 @@ from multiprocessing.dummy import Pool as ThreadPool	#线程并发
 def saveaudio(filename, audiodata, channels, format, rate, overwrite=True):
 	"""保存声音到文件
 
-		Args:
-			filename: 文件目录+文件名
-			audiodata: 二进制声音数据 <class 'bytes'>
-			channels: 声道数量
-			format: 数据格式 例如pyaudio.paInt16
-			rate: 采样频率
-			overwrite: 如果文件已经存在就: True:覆盖 False:报错
+	Args:
+		filename: 文件目录+文件名
+		audiodata: 二进制声音数据 <class 'bytes'>
+		channels: 声道数量
+		format: 数据格式 例如pyaudio.paInt16
+		rate: 采样频率
+		overwrite: 如果文件已经存在就: True:覆盖 False:报错
 
-		Returns:
-			None
+	Returns:
+		None
 
-		Raises:
-			如果目录不存在，wf = wave.open(filename, 'wb')会报错
+	Raises:
+		如果目录不存在，wf = wave.open(filename, 'wb')会报错
 
-		Notes:
-			filename示例:
-			>>> filename = os.path.join(path, 's5_'+str(savecount)+'.wav')
+	Notes:
+		filename示例:
+		>>> filename = os.path.join(path, 's5_'+str(savecount)+'.wav')
 	"""
 	# 保存声音
 	# 如果文件名重复，自动重命名
@@ -64,13 +64,13 @@ def saveaudio(filename, audiodata, channels, format, rate, overwrite=True):
 def newaudio(f, sr, T):
 	"""创建音频
 
-		Args:
-			f: 音频频率(Hz)
-			sr: 采样频率(Hz)
-			T: 时间s
-		
-		Rerutns:
-			音频数据，numpy数组格式
+	Args:
+		f: 音频频率(Hz)
+		sr: 采样频率(Hz)
+		T: 时间s
+	
+	Rerutns:
+		音频数据，numpy数组格式
 	"""
 	t = np.linspace(0, T, int(T*sr), endpoint=False)
 	x = 0.5*np.sin(2*np.pi*f*t)
@@ -80,11 +80,11 @@ def newaudio(f, sr, T):
 def loadwav(filename):
 	"""从.wav文件中读取语音
 
-		Args:
-			filename: 文件目录+文件名
+	Args:
+		filename: 文件目录+文件名
 
-		Returns:
-			归一化数据，numpy数组格式
+	Returns:
+		归一化数据，numpy数组格式
 	"""
 	wf = wave.open(filename, 'rb')
 	width = wf.getsampwidth()	#数据长度，用于二进制byte数据转换为音频数据时参考
@@ -106,12 +106,12 @@ def loadwav(filename):
 def loaddatafile(path, filetype):
 	"""遍历目录下所有指定类型文件
 
-		Args:
-			path:数据文件目录
-			filetype:文件类型，其余类型不加载
+	Args:
+		path:数据文件目录
+		filetype:文件类型，其余类型不加载
 
-		Returns:
-			文件路径列表
+	Returns:
+		文件路径列表
 	"""
 	return [
 		os.path.join(path, filename)
@@ -123,12 +123,12 @@ def loaddatafile(path, filetype):
 def loaddata(datafile):
 	"""批量加载目录下音频数据
 
-		Args:
-			datafile:数据文件，类型可以是单个文件路径，也可以是多个文件路径列表
+	Args:
+		datafile:数据文件，类型可以是单个文件路径，也可以是多个文件路径列表
 
-		Returns:
-			datafile为单个文件：numpy数据
-			datafile为目录：数据列表，元素为numpy数据
+	Returns:
+		datafile为单个文件：numpy数据
+		datafile为目录：数据列表，元素为numpy数据
 	"""
 	if isinstance(datafile, list):
 		pool = ThreadPool(6)	#多线程

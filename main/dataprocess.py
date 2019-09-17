@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+音频文件及数据的输入输出
+"""
+
+#导入库
 import os
 import math
 import struct
@@ -13,18 +18,43 @@ from librosa import display
 from scipy.fftpack import fft
 from sklearn.externals import joblib
 
+#导入其他文件
 import audioio as io
 import dsp
 from globalvar import *		#导入常量
 
+#类
+#常量
+#全局变量
+audio_cache = {}	#记录声音数据，用于连续录音
+pca = readmodel('../modules/pca.m')		#读取模型
+classifier = readmodel('../modules/svm.m')		#读取模型
+# coef = np.load('../modules/coef.npy')
+fir = dsp.FIR_Filter(44100, 300, 330, deltp=1.008, delts=0.005)		#FIR滤波器初始化
 
+#函数
 def readmodel(filename):
+	"""加载模型文件
+
+	Args:
+		filename: 模型文件
+	
+	Rerutns:
+		模型
+	"""
 	return joblib.load(filename)
 
 def diswave(x, sr, ion=False):
-	'''	显示波形幅度包络图
-		x:波形数据 sr:采样频率 ion:pyplot显示模式，默认阻塞模式
-	'''
+	"""绘制波形幅度包络图
+
+	Args:
+		x: 波形数据
+		sr: 采样频率
+		ion: pyplot显示模式，默认阻塞模式
+
+	Returns:
+		None
+	"""
 	if ion:
 		plt.ion()
 		plt.clf()
@@ -36,50 +66,79 @@ def diswave(x, sr, ion=False):
 	if not ion:
 		plt.show()
 
-audio_cache = {}	#记录声音数据，用于连续录音
-pca = readmodel('../modules/pca.m')
-classifier = readmodel('../modules/svm.m')		#读取模型
-# coef = np.load('../modules/coef.npy')
-fir = dsp.FIR_Filter(44100, 300, 330, deltp=1.008, delts=0.005)
 def dataprocess(audiodata, callback = None, mode = "normal"):
-	'''	数据处理
-		流程：
-			if有缓存，说明上次检测到一部分声音，本次开头一定是剩余声音，不进行端点检测，直接连接:
-				连接
-				清空缓存
+	"""数据处理
+
+	流程：
+		if有缓存，说明上次检测到一部分声音，本次开头一定是剩余声音，不进行端点检测，直接连接:
+			连接
+			清空缓存
+			数据处理(def process(floatdata):)
+		else没有缓存，正常处理:
+			端点检测
+			if右端点超出范围:
+				数据添加到缓存,结束本次数据处理(return)
+			elif端点都在当前帧内，正常截取:
+				截取数据
 				数据处理(def process(floatdata):)
-			else没有缓存，正常处理:
-				端点检测
-				if右端点超出范围:
-					数据添加到缓存,结束本次数据处理(return)
-				elif端点都在当前帧内，正常截取:
-					截取数据
-					数据处理(def process(floatdata):)
-				else:
-					pass
-	'''
+			else:
+				pass
+		
+	Args:
+		audiodata: 二进制音频数据
+		callback: 数据处理完成后的操作，函数或Queue。Queue用于给operation.py进程传参
+		mode: 执行模式，详见globalvar.py, MODE_ENUM
+			| normal  | samplen  | train   |
+			| 正常处理 | 第n点采样 | 模型训练 |
+
+	Returns:
+		None
+	"""
 	def process(floatdata):
+		"""数据处理
+
+		不同位置用到2次，所以单独写成函数
+
+		Args:
+			floatdata: PCM音频数据 numpy-float32类型
+
+		Returns:
+			None
+		"""
 		# floatdata, sr = librosa.load('./test.wav')	#读取声音
 
 		diswave(floatdata, RATE, ion=True)		#绘制波形
 		
 		# featuredata = dsp.feature(floatdata, RATE)					#FFT
-		featuredata = fir.filtering(floatdata)
-		reduceddata = pca.transform(featuredata.reshape(1, -1))
+		featuredata = fir.filtering(floatdata)							#FIR滤波，得到特征数据
+		reduceddata = pca.transform(featuredata.reshape(1, -1))			#PCA降维，模型需要数据格式转换
 
-		probability = classifier.predict_proba(reduceddata)	#分类
+		probability = classifier.predict_proba(reduceddata)	#分类器输出概率
 		position = np.argmax(probability)					#概率最大的位置
 		print(probability)
 		print(position)
 
 		# print(position, max(probability))
-		if callback:				#触发
+		if callback:				#用户定义的后续操作
 			if callable(callback):		#是一个函数
 				callback(position)
 			elif isinstance(callback, multiprocessing.queues.Queue):	#进程通信队列
 				callback.put(position, block=False)
 
 	def save_audio(audiodata):
+		"""保存音频，用于samplen模式
+
+		不同位置用到2次，所以单独写成函数
+		保存位置在该函数内定义
+		其余音频参数参考globalvar.py
+
+		Args:
+			audiodata: 二进制音频数据
+
+		Returns:
+			None
+		"""
+
 		filename = f'../samples/{mode}/{mode}.wav'				#io.saveaudio函数自动重命名
 		if not os.path.exists(os.path.dirname(filename)):		#如果sample文件夹不存在，创建文件夹
 			os.makedirs(os.path.dirname(filename))
@@ -113,6 +172,7 @@ def dataprocess(audiodata, callback = None, mode = "normal"):
 			# print('None')
 			pass
 
+# 测试程序
 if __name__ == '__main__':
 	sr = RATE
 	x = newaudio(2, sr, 5.0)
