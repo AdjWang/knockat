@@ -16,8 +16,17 @@ from globalvar import *		#导入全局变量
 
 # RECORD_SECONDS = 5
 def record_start(callback = None, mode = "normal"):
-	'''	加载麦克风录音
-	'''
+	"""加载麦克风录音
+
+	Args:
+		callback: 数据处理完成后的操作，函数或Queue。Queue用于给operation.py进程传参
+		mode: 执行模式，详见globalvar.py, MODE_ENUM
+			| normal  | samplen  | train   |
+			| 正常处理 | 第n点采样 | 模型训练 |
+
+	Returns:
+		None
+	"""
 	global exitFlag
 	
 	p = pyaudio.PyAudio()
@@ -43,7 +52,7 @@ def record_start(callback = None, mode = "normal"):
 			# 	frames1.append(data)
 			audio_data = stream.read(CHUNK*CHUNK_NUM)
 			# audio_data = np.fromstring(data, dtype=np.short)
-			''' 数据处理程序 '''
+			""" 数据处理程序 """
 			# print('数据处理...')
 			dataprocess(audio_data, callback, mode)
 	except KeyboardInterrupt:
@@ -59,11 +68,11 @@ def record_start(callback = None, mode = "normal"):
 	p.terminate()
 
 
-''' 测试代码 '''
+""" 测试代码 """
 if __name__ == '__main__':
 	def trigger(position):
-		'''	敲击后触发该函数
-		'''
+		"""	敲击后触发该函数
+		"""
 		print(position)
 
 	record_start(callback = trigger)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-信号处理
+数字信号处理
 """
 
 #导入库
@@ -18,7 +18,6 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
 #导入其他文件
 
-#类
 #常量
 #全局变量
 #函数
@@ -316,6 +315,7 @@ def peak_cut(data, p_peak, lk, rk):
 		r += 1
 	return l, r
 
+#类
 class MFCC_Filter():
 	"""	MFCC特征参数提取（基于MATLAB和Python实现）
 		https://www.e-learn.cn/content/python/647603
@@ -456,10 +456,20 @@ class FIR_Filter():
 
 	def hn(self, numtaps, bands, desired, weight=None, Hz=1, _type='bandpass', maxiter=25, grid_density=16):
 		# https://docs.scipy.org/doc/scipy-0.18.1/reference/generated/scipy.signal.remez.html
+		# Calculate the minimax optimal filter using the Remez exchange algorithm.
 		bpass = signal.remez(numtaps, bands, desired, weight, Hz, _type, maxiter, grid_density)
 		return bpass
 
 	def show_freqz(self):
+		"""绘制幅频响应图
+		
+		Args:
+			None
+
+		Returns:
+			None
+		"""
+
 		freq, response = signal.freqz(self.coeffs)
 		ampl = np.abs(response)
 
@@ -470,6 +480,15 @@ class FIR_Filter():
 		plt.show()
 
 	def filtering(self, x):
+		"""滤波
+		
+		Args:
+			x: 滤波前数据
+
+		Returns:
+			res: 滤波后数据
+		"""
+
 		res = signal.convolve(x, self.coeffs, 'full')
 		delay = int((self.N-1)/2)		#延迟(N-1)Ts/2  N为滤波器阶数 Ts为一个采样点时间
 		return res[delay : len(x)+delay]

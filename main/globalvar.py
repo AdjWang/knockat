@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+部分全局变量
+
+有部分全局变量在很多地方用到，不容易分类，所以集中到这里
+"""
+
 import pyaudio
 
 CHUNK = 1024	#每个CHUNK大小
@@ -18,4 +24,6 @@ SIGNALLEN = 6400	#声音长度
 
 exitFlag = 0 		#程序退出标识，ctrl+c触发
 
-MODE_ENUM = ("normal", "sample1", "sample2", "sample3", "sample4", "sample5", "train")
+# | normal  | samplen  | train   |
+# | 正常处理 | 第n点采样 | 模型训练 |
+MODE_ENUM = ("normal", "sample1", "sample2", "sample3", "sample4", "sample5", "train")  # 程序输入参数，设置运行模式

@@ -1,15 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+自定义操作
+"""
+#导入库
 # import pygame
 import sys
 import matplotlib.pyplot as plt
-
-from globalvar import *		#导入全局变量
+#导入全局变量
+from globalvar import *
 
 def operation(q):
-	'''
-	'''
+	"""操作
+
+	Args:
+		q: Queue，传递进程pRecord的参数
+	
+	Returns:
+		None
+	"""
 	global exitFlag
 
 	poslist = [0]*5
