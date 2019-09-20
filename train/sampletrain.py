@@ -1,6 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+采样数据训练
+
+将采样的音频数据训练成模型
+数据存放在 ../samples/ 下，每点放在一个文件夹里，各采样点音频数量一致
+将数据目录添加到本程序常量中，用于读取
+"""
+#导入库
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,10 +22,13 @@ import librosa
 from pyAudioAnalysis import audioFeatureExtraction
 from functools import partial
 
+#导入其他文件
 sys.path.append('../main/')
 import dsp 			#../dsp.py
 import audioio		#../audioio.py
 
+#类
+#常量
 #5个点的采样数据目录
 SAMPLEPATH_P1 = '../samples/sample1'
 SAMPLEPATH_P2 = '../samples/sample2'
@@ -25,17 +36,42 @@ SAMPLEPATH_P3 = '../samples/sample3'
 SAMPLEPATH_P4 = '../samples/sample4'
 SAMPLEPATH_P5 = '../samples/sample5'
 FILETYPE = '.wav'				#数据文件格式，其余文件不识别
+#全局变量
 
-
+#函数
 def readmodel(filename):
-	''' 读取训练模型 '''	
+	"""读取训练模型
+	
+	Args:
+		filename: 模型文件
+
+	Return:
+		class of model
+	"""	
 	return joblib.load(filename)
 
 def savemodel(model, filename):
-	''' 保存训练模型 '''
+	"""保存训练模型
+	
+	Args:
+		model: 模型
+		filename: 模型文件
+
+	Return:
+		None
+	"""	
 	joblib.dump(model, filename)
 
 def audio_train():
+	"""训练模型
+	
+	Args:
+		None
+
+	Return:
+		None
+	"""	
+
 	print('读取数据文件列表...', end='', flush=True)
 	datafilelist1 = audioio.loaddatafile(SAMPLEPATH_P1, FILETYPE)
 	datafilelist2 = audioio.loaddatafile(SAMPLEPATH_P2, FILETYPE)
@@ -146,5 +182,6 @@ def audio_train():
 	print("输出训练集的准确率为：", classifier.score(x_train, y_train))
 	print("输出测试集的准确率为：", classifier.score(x_test, y_test))
 
+# 测试程序
 if __name__ == '__main__':
 	audio_train()
