@@ -1,3 +1,9 @@
+# 无聊的时候敲敲桌子玩  
+knock at... 其实什么都能敲  
+这是一个识别敲击位置的程序，可以视为一个简单的事件检测程序。  
+在桌子上有几个点，用小锤子去敲，我想让计算机知道我敲的位置，来点互动~  
+然后这个程序诞生了。  
+
 ## 程序结构  
 knockat/  
 |-- main/  
@@ -9,7 +15,7 @@ knockat/
 |-- |-- operation.py           识别后的操作  
 |-- |-- record.py                麦克风操作，录音  
 |-- modules/                    模型文件-训练自动产生  
-|-- |-- *.m  
+|-- |-- \*.m  
 |-- references/            参考资料  
 |-- |--  ...  
 |-- samples/                程序主体模块存放  
@@ -19,7 +25,53 @@ knockat/
 |-- |-- sampletrain.py  
 |-- README.md              说明文档  
 
-启动方式:  
+## 启动方式:  
+```sh
 python3 ./main/main.py [--mode]
+```
 
-to be continued...  
+## 示例:
+### 采集数据
+在桌子上画5个点，建议间距不小于15cm
+找一个小锤子
+
+```sh
+python3 ./main/main.py --mode sample1
+```
+敲100下，如果识别到敲击声，命令窗口会有提示
+按Ctrl+C终止程序
+
+```sh
+python3 ./main/main.py --mode sample2
+```
+敲100下，如果识别到敲击声，命令窗口会有提示
+按Ctrl+C终止程序
+
+```sh
+python3 ./main/main.py --mode sample3
+```
+敲100下，如果识别到敲击声，命令窗口会有提示
+按Ctrl+C终止程序
+
+```sh
+python3 ./main/main.py --mode sample4
+```
+敲100下，如果识别到敲击声，命令窗口会有提示
+按Ctrl+C终止程序
+
+```sh
+python3 ./main/main.py --mode sample5
+```
+敲100下，如果识别到敲击声，命令窗口会有提示
+按Ctrl+C终止程序
+
+### 训练采样数据
+```sh
+python3 ./main/main.py --mode train
+```
+### 开始玩耍
+```sh
+python3 ./main/main.py
+```
+
+(to be continued...)
