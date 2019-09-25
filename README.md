@@ -29,9 +29,10 @@ knockat/
 ```sh
 python3 ./main/main.py [--mode]
 ```
+首次使用需要使用--mode参数采集音频、训练，后续使用直接运行main.py即可。
 
 ## 示例:
-### 采集数据
+### 采集数据(首次运行需要)
 在桌子上画5个点，建议间距不小于15cm
 找一个小锤子
 
@@ -65,7 +66,7 @@ python3 ./main/main.py --mode sample5
 敲100下，如果识别到敲击声，命令窗口会有提示
 按Ctrl+C终止程序
 
-### 训练采样数据
+### 训练采样数据(首次运行需要)
 ```sh
 python3 ./main/main.py --mode train
 ```
