@@ -13,10 +13,7 @@ import threading
 import os, time, random
 
 #导入其他文件
-sys.path.append('../')
-from record import record_start
-from operation import operation
-from train import sampletrain
+sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 #全局变量
 from globalvar import *		#导入全局变量
 
@@ -46,16 +43,25 @@ def main():
 	"""
 	# 程序参数处理
 	parser = argparse.ArgumentParser(description='knock at')
-	parser.add_argument('--mode', help=f'mode: {MODE_ENUM}, default: normal')
+	parser.add_argument('--mode', help=f'mode: {MODE_ENUM}, default: normal', default='normal')
 	args = parser.parse_args()
 	if args.mode:
 		mode = args.mode.lower()
 		if mode not in MODE_ENUM:
 			print('error: wrong mode!')
 			parser.print_help()
-		if mode == "train":
+			return
+		if mode == "normal":
+			from record import record_start
+			from operation import operation
+			from train import sampletrain
+		elif mode == "train":
+			from train import sampletrain
 			sampletrain.audio_train()
 			return
+		else:	#sample*
+			from record import record_start
+			from operation import operation
 
 	# 父进程创建Queue，并传给各个子进程：
 	q = Queue()		# 传参

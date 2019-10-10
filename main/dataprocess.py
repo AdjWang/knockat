@@ -27,22 +27,25 @@ from globalvar import *		#导入常量
 #常量
 #全局变量
 audio_cache = {}	#记录声音数据，用于连续录音
-pca = readmodel('../modules/pca.m')		#读取模型
-classifier = readmodel('../modules/svm.m')		#读取模型
+module_path = './modules/'	#模型文件所在文件夹位置
+if os.path.exists(os.path.join(module_path, 'pca.m')):
+	pca = joblib.load(os.path.join(module_path, 'pca.m'))		#读取模型
+if os.path.exists(os.path.join(module_path, 'svm.m')):
+	classifier = joblib.load(os.path.join(module_path, 'svm.m'))		#读取模型
 # coef = np.load('../modules/coef.npy')
 fir = dsp.FIR_Filter(44100, 300, 330, deltp=1.008, delts=0.005)		#FIR滤波器初始化
 
 #函数
-def readmodel(filename):
-	"""加载模型文件
+# def readmodel(filename):
+# 	"""加载模型文件
 
-	Args:
-		filename: 模型文件
+# 	Args:
+# 		filename: 模型文件
 	
-	Rerutns:
-		模型
-	"""
-	return joblib.load(filename)
+# 	Rerutns:
+# 		模型
+# 	"""
+# 	return joblib.load(filename)
 
 def diswave(x, sr, ion=False):
 	"""绘制波形幅度包络图
@@ -138,10 +141,10 @@ def dataprocess(audiodata, callback = None, mode = "normal"):
 		Returns:
 			None
 		"""
-
-		filename = f'../samples/{mode}/{mode}.wav'				#io.saveaudio函数自动重命名
-		if not os.path.exists(os.path.dirname(filename)):		#如果sample文件夹不存在，创建文件夹
-			os.makedirs(os.path.dirname(filename))
+		dirname = os.path.join(os.path.dirname(__file__), f'../samples/{mode}/')
+		filename = os.path.join(os.path.dirname(__file__), f'../samples/{mode}/{mode}.wav')				#io.saveaudio函数自动重命名
+		if not os.path.exists(dirname):		#如果sample文件夹不存在，创建文件夹
+			os.makedirs(dirname)
 		io.saveaudio(filename, audiodata, CHANNELS, FORMAT, RATE, overwrite=False)		#保存音频文件，函数自动重命名
 
 	tupdata = struct.unpack('<'+len(audiodata)//WIDTH*'h', audiodata)#音频数据byte转int
@@ -150,6 +153,8 @@ def dataprocess(audiodata, callback = None, mode = "normal"):
 	if len(audio_cache) > 0:	#有缓存，需要连接剩下的声音
 		if mode[:-1] == "sample":
 			save_audio(audio_cache['byte_audio']+audiodata[:math.ceil(WIDTH*audio_cache['endpoint'])])#保存声音
+			audio_cache.clear()		#清空缓存
+			return
 
 		floatdata = np.concatenate([audio_cache['last_audio'], floatdata[:audio_cache['endpoint']]])#连接上次和本次数据
 		audio_cache.clear()		#清空缓存
@@ -166,6 +171,7 @@ def dataprocess(audiodata, callback = None, mode = "normal"):
 		elif l != 0 or r != 0:		#声音片断在当前帧内，正常处理，不缓存
 			if mode[:-1] == "sample":
 				save_audio(audiodata[math.floor(WIDTH*l):math.ceil(WIDTH*r)])#保存声音
+				return
 
 			process(floatdata[l:r])
 		else:

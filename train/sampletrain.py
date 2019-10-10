@@ -9,6 +9,7 @@
 将数据目录添加到本程序常量中，用于读取
 """
 #导入库
+import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -23,18 +24,22 @@ from pyAudioAnalysis import audioFeatureExtraction
 from functools import partial
 
 #导入其他文件
-sys.path.append('../main/')
-import dsp 			#../dsp.py
-import audioio		#../audioio.py
+sys.path.append('./main/')
+import dsp 			#./dsp.py
+import audioio		#./audioio.py
 
 #类
 #常量
+module_dirname = './modules/'	# 模型文件存放位置
+if not os.path.exists(module_dirname):		#如果sample文件夹不存在，创建文件夹
+	os.makedirs(module_dirname)
 #5个点的采样数据目录
-SAMPLEPATH_P1 = '../samples/sample1'
-SAMPLEPATH_P2 = '../samples/sample2'
-SAMPLEPATH_P3 = '../samples/sample3'
-SAMPLEPATH_P4 = '../samples/sample4'
-SAMPLEPATH_P5 = '../samples/sample5'
+print(os.path)
+SAMPLEPATH_P1 = './samples/sample1'
+SAMPLEPATH_P2 = './samples/sample2'
+SAMPLEPATH_P3 = './samples/sample3'
+SAMPLEPATH_P4 = './samples/sample4'
+SAMPLEPATH_P5 = './samples/sample5'
 FILETYPE = '.wav'				#数据文件格式，其余文件不识别
 #全局变量
 
@@ -130,13 +135,17 @@ def audio_train():
 	pool.join()
 	print('ok')
 
-	y = np.array(range(5)).repeat(100)#np.array(range(data.shape[0])).repeat(data.shape[1])
+	# 标签 		 采样点数	  每点采样数
+	y = np.array(range(5)).repeat(10)
+	# print(audiodata.shape())
+	# print(len(datafilelist), len(datafilelist1))
 
-	# print('数据降维...', end='', flush=True)
+	print('数据降维...', end='', flush=True)
 	# pca = PCA(n_components=11)
-	# reduceddata = pca.fit_transform(featuredata)
-	# reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
-	# savemodel(pca, '../modules/pca.m')	#保存模型
+	pca = PCA()
+	reduceddata = pca.fit_transform(featuredata)
+	reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
+	savemodel(pca, os.path.join(module_dirname, 'pca.m'))	#保存模型
 
 	# lda = LDA(n_components=4)
 	# reduceddata = lda.fit_transform(featuredata, y)
@@ -165,7 +174,7 @@ def audio_train():
 	# plt.plot(np.arange(500).T*44100/6400, featuredata[400:500,:].T)
 	# plt.show()
 
-	x_train, x_test, y_train, y_test = model_selection.train_test_split(featuredata, y, random_state=0, test_size=0.3)#随机划分数据
+	x_train, x_test, y_train, y_test = model_selection.train_test_split(reduceddata, y, random_state=0, test_size=0.3)#随机划分数据
 	print('训练数据集：' + str(x_train.shape[0]))
 	print('测试数据集：' + str(x_test.shape[0]))
 
@@ -173,12 +182,13 @@ def audio_train():
 	#'linear', 'poly', 'rbf', 'sigmoid', 'precomputed' or a callable
 	classifier = svm.SVC(kernel='rbf', gamma='scale', decision_function_shape='ovr', C=0.5, probability=True)
 	# classifier = LDA(n_components=4)
-	classifier.fit(x_train, y_train)	#测试训练
-	# classifier.fit(reduceddata, y)		#全数据训练
-	# savemodel(classifier, '../modules/svm.m')	#保存模型
+
+	classifier.fit(reduceddata, y)		#全数据训练
+	savemodel(classifier, os.path.join(module_dirname, 'svm.m'))	#保存模型
 	# classifier = svm_readmodel('../modules/knock.m')		#读取模型
 	print('ok')
 
+	classifier.fit(x_train, y_train)	#测试训练
 	print("输出训练集的准确率为：", classifier.score(x_train, y_train))
 	print("输出测试集的准确率为：", classifier.score(x_test, y_test))
 

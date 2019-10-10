@@ -1,5 +1,5 @@
 *.pyc
-modules/
-samples/
+# modules/
+# samples/
 test/
 references/
