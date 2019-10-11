@@ -9,10 +9,10 @@
 import math
 import numpy as np
 import librosa
-import pyworld as pw
+# import pyworld as pw
 from scipy.fftpack import fft, ifft, dct
 from scipy import signal
-from pyAudioAnalysis import audioFeatureExtraction
+# from pyAudioAnalysis import audioFeatureExtraction
 from multiprocessing import Pool						#进程并行
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 
@@ -496,16 +496,16 @@ class FIR_Filter():
 #测试程序
 if __name__ == '__main__':
 	fir = FIR_Filter(44100, 200, 230, deltp=10**(0.02/20), delts=10**(-50/20))
-	# N = fir.n_estimate(44100, 180, 230, deltp=10**(0.02/20), delts=10**(-50/20))
+	N = fir.n_estimate(44100, 180, 230, deltp=10**(0.02/20), delts=10**(-50/20))
 	# N = fir.n_estimate()
-	# print(N)
-	# bpass = signal.remez(N, [0.0, 180, 230, 22050], [1, 0], Hz=44100, type='bandpass')
-	# freq, response = signal.freqz(bpass)
-	# ampl = np.abs(response)
+	print(N)
+	bpass = signal.remez(N, [0.0, 180, 230, 22050], [1, 0], Hz=44100, type='bandpass')
+	freq, response = signal.freqz(bpass)
+	ampl = np.abs(response)
 
-	# import matplotlib.pyplot as plt
-	# fig = plt.figure()
-	# ax1 = fig.add_subplot(111)
-	# ax1.semilogy(freq/(2*np.pi), ampl, 'b-')  # freq in Hz
-	# plt.show()
+	import matplotlib.pyplot as plt
+	fig = plt.figure()
+	ax1 = fig.add_subplot(111)
+	ax1.semilogy(freq/(2*np.pi), ampl, 'b-')  # freq in Hz
+	plt.show()
 

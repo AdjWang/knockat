@@ -76,3 +76,37 @@ python3 ./main/main.py
 ```
 
 (to be continued...)
+
+py37安装pyaudio
+https://blog.csdn.net/a506681571/article/details/85201279
+
+conda install pyaudio  
+pip install librosa  
+conda报错
+(base) PS D:\PythonProjects\knockat> conda install librosa
+Collecting package metadata (repodata.json): done
+Solving environment: failed with initial frozen solve. Retrying with flexible solve.
+
+PackagesNotFoundError: The following packages are not available from current channels:
+
+  - librosa
+
+Current channels:
+
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/win-64
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/noarch
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/win-64
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/noarch
+  - https://repo.anaconda.com/pkgs/main/win-64
+  - https://repo.anaconda.com/pkgs/main/noarch
+  - https://repo.anaconda.com/pkgs/msys2/win-64
+  - https://repo.anaconda.com/pkgs/msys2/noarch
+
+To search for alternate channels that may provide the conda package you're
+looking for, navigate to
+
+    https://anaconda.org
+
+and use the search bar at the top of the page.
+
+验证FIR!!  

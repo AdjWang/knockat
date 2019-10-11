@@ -20,7 +20,7 @@ from sklearn.externals import joblib
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 import librosa
-from pyAudioAnalysis import audioFeatureExtraction
+# from pyAudioAnalysis import audioFeatureExtraction
 from functools import partial
 
 #导入其他文件
@@ -125,11 +125,12 @@ def audio_train():
 	mfcc_filter = mfcc.make()
 
 	fir = dsp.FIR_Filter(44100, 200, 330, deltp=1.008, delts=0.005)
-	print(fir.N)
+	print('point number of FIR: ', fir.N)
 	# coeffs = np.load('coef.npy')
 	pool = Pool(4)
-	featuredata = np.array(pool.map(fir.filtering, audiodata))					#fir
-	ym = np.array(pool.map(partial(dsp.rfft, n_result=n_fft), audiodata))**2 		#能量谱
+	# filtered_data = np.array(pool.map(fir.filtering, audiodata))					#fir
+	filtered_data = audiodata
+	ym = np.array(pool.map(partial(dsp.rfft, n_result=n_fft), filtered_data))**2 		#能量谱
 	featuredata = np.array(pool.map(partial(mfcc.filtering, mfccfilter=mfcc_filter), ym))	#mfcc
 	pool.close()
 	pool.join()
@@ -151,7 +152,9 @@ def audio_train():
 	# reduceddata = lda.fit_transform(featuredata, y)
 	# reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
 	# savemodel(lda, '../modules/lda.m')	#保存模型
-	# print('ok')
+
+	# reduceddata = featuredata
+	print('ok')
 
 	# plt.subplot(5,1,1)
 	# # plt.plot(np.arange(500).T*44100/6400, np.sum(featuredata[0:100,:], axis=0))

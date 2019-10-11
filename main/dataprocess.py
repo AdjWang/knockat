@@ -112,8 +112,15 @@ def dataprocess(audiodata, callback = None, mode = "normal"):
 
 		diswave(floatdata, RATE, ion=True)		#绘制波形
 		
-		# featuredata = dsp.feature(floatdata, RATE)					#FFT
-		featuredata = fir.filtering(floatdata)							#FIR滤波，得到特征数据
+		# filtered_data = fir.filtering(floatdata)							#FIR滤波，得到特征数据
+		filtered_data = floatdata
+
+		n_fft = 512
+		mfcc = dsp.MFCC_Filter(44100, n_fft)
+		mfcc_filter = mfcc.make()
+		ym = dsp.rfft(filtered_data, n_result=n_fft)**2 					#能量谱
+		featuredata = mfcc.filtering(ym, mfccfilter=mfcc_filter)		#mfcc
+
 		reduceddata = pca.transform(featuredata.reshape(1, -1))			#PCA降维，模型需要数据格式转换
 
 		probability = classifier.predict_proba(reduceddata)	#分类器输出概率
