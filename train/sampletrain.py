@@ -15,6 +15,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from multiprocessing import Pool						#进程并行
 # from multiprocessing.dummy import Pool as ThreadPool	#线程并发
+# import multiprocessing
+# multiprocessing.set_start_method('forkserver',True)		#fix a Runtime bug in VSCODE
+
 from sklearn import svm, model_selection, preprocessing
 from sklearn.externals import joblib
 from sklearn.decomposition import PCA
@@ -124,8 +127,8 @@ def audio_train():
 	mfcc = dsp.MFCC_Filter(44100, n_fft)
 	mfcc_filter = mfcc.make()
 
-	fir = dsp.FIR_Filter(44100, 200, 330, deltp=1.008, delts=0.005)
-	print('point number of FIR: ', fir.N)
+	# fir = dsp.FIR_Filter(44100, 200, 330, deltp=1.008, delts=0.005)
+	# print('point number of FIR: ', fir.N)
 	# coeffs = np.load('coef.npy')
 	pool = Pool(4)
 	# filtered_data = np.array(pool.map(fir.filtering, audiodata))					#fir
@@ -143,17 +146,17 @@ def audio_train():
 
 	print('数据降维...', end='', flush=True)
 	# pca = PCA(n_components=11)
-	pca = PCA()
-	reduceddata = pca.fit_transform(featuredata)
-	reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
-	savemodel(pca, os.path.join(module_dirname, 'pca.m'))	#保存模型
+	# pca = PCA()
+	# reduceddata = pca.fit_transform(featuredata)
+	# reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
+	# savemodel(pca, os.path.join(module_dirname, 'pca.m'))	#保存模型
 
 	# lda = LDA(n_components=4)
 	# reduceddata = lda.fit_transform(featuredata, y)
 	# reduceddata = reduceddata/np.max(np.abs(reduceddata))		#normalize
 	# savemodel(lda, '../modules/lda.m')	#保存模型
 
-	# reduceddata = featuredata
+	reduceddata = featuredata
 	print('ok')
 
 	# plt.subplot(5,1,1)

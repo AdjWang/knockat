@@ -13,8 +13,8 @@ import threading
 import os, time, random
 
 #导入其他文件
-sys.path.append(os.path.join(os.path.dirname(__file__)))
-sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
+sys.path.append('./main')
+sys.path.append('./train')
 #全局变量
 from globalvar import *		#导入全局变量
 

@@ -6,12 +6,12 @@ knock at... 其实什么都能敲
 
 ## 程序结构  
 knockat/  
+|-- main.py                  主程序-运行此程序启动  
 |-- main/  
 |-- |-- audioio.py              音频文件读写  
 |-- |-- dataprocess.py      音频数据处理  
 |-- |-- dsp.py                    数字信号处理  
 |-- |-- globalvar.py           全局变量  
-|-- |-- main.py                  主程序-运行此程序启动  
 |-- |-- operation.py           识别后的操作  
 |-- |-- record.py                麦克风操作，录音  
 |-- modules/                    模型文件-训练自动产生  
@@ -26,8 +26,9 @@ knockat/
 |-- README.md              说明文档  
 
 ## 启动方式:  
+在knockat目录下运行终端：  
 ```sh
-python3 ./main/main.py [--mode]
+python3 main.py [--mode]
 ```
 首次使用需要使用--mode参数采集音频、训练，后续使用直接运行main.py即可。
 
@@ -37,43 +38,47 @@ python3 ./main/main.py [--mode]
 找一个小锤子
 
 ```sh
-python3 ./main/main.py --mode sample1
+python3 main.py --mode sample1
 ```
 敲100下，如果识别到敲击声，命令窗口会有提示
 按Ctrl+C终止程序
 
 ```sh
-python3 ./main/main.py --mode sample2
+python3 main.py --mode sample2
 ```
 敲100下，如果识别到敲击声，命令窗口会有提示
 按Ctrl+C终止程序
 
 ```sh
-python3 ./main/main.py --mode sample3
+python3 main.py --mode sample3
 ```
 敲100下，如果识别到敲击声，命令窗口会有提示
 按Ctrl+C终止程序
 
 ```sh
-python3 ./main/main.py --mode sample4
+python3 main.py --mode sample4
 ```
 敲100下，如果识别到敲击声，命令窗口会有提示
 按Ctrl+C终止程序
 
 ```sh
-python3 ./main/main.py --mode sample5
+python3 main.py --mode sample5
 ```
 敲100下，如果识别到敲击声，命令窗口会有提示
 按Ctrl+C终止程序
 
 ### 训练采样数据(首次运行需要)
 ```sh
-python3 ./main/main.py --mode train
+python3 main.py --mode train
 ```
 ### 开始玩耍
 ```sh
-python3 ./main/main.py
+python3 main.py
 ```
+  
+后续计划改进内容：  
+1. 可变点数  
+2. 抗噪  
 
 (to be continued...)
 

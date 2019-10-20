@@ -121,7 +121,8 @@ def dataprocess(audiodata, callback = None, mode = "normal"):
 		ym = dsp.rfft(filtered_data, n_result=n_fft)**2 					#能量谱
 		featuredata = mfcc.filtering(ym, mfccfilter=mfcc_filter)		#mfcc
 
-		reduceddata = pca.transform(featuredata.reshape(1, -1))			#PCA降维，模型需要数据格式转换
+		# reduceddata = pca.transform(featuredata.reshape(1, -1))			#PCA降维，模型需要数据格式转换
+		reduceddata = featuredata.reshape(1, -1)
 
 		probability = classifier.predict_proba(reduceddata)	#分类器输出概率
 		position = np.argmax(probability)					#概率最大的位置
